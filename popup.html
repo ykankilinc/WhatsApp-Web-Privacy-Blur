@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Privacy Blur</h1>
+      <label class="switch master" id="masterSwitchContainer">
+        <input type="checkbox" id="masterToggle">
+        <span class="slider round"></span>
+      </label>
+    </div>
+
+    <!-- MAIN VIEW (Hidden by default until unlocked) -->
+    <div id="mainView" class="hidden">
+      <div class="options" id="optionsContainer">
+        <!-- Privacy Settings -->
+        <div class="option-group">
+          <label class="option-item">
+            <span>Blur All Messages</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" id="blurAllMessages">
+              <div class="toggle-bg"></div>
+            </div>
+          </label>
+
+          <label class="option-item">
+            <span>Blur Last Messages</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" id="blurLastMessages">
+              <div class="toggle-bg"></div>
+            </div>
+          </label>
+        </div>
+
+        <div class="option-group">
+          <label class="option-item">
+            <span>Media Preview</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" id="blurMediaPreview">
+              <div class="toggle-bg"></div>
+            </div>
+          </label>
+
+          <label class="option-item">
+            <span>Media Gallery</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" id="blurMediaGallery">
+              <div class="toggle-bg"></div>
+            </div>
+          </label>
+        </div>
+
+        <div class="option-group">
+          <label class="option-item">
+            <span>Text Input</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" id="blurTextInput">
+              <div class="toggle-bg"></div>
+            </div>
+          </label>
+
+          <label class="option-item">
+            <span>Profile Pictures</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" id="blurProfilePictures">
+              <div class="toggle-bg"></div>
+            </div>
+          </label>
+
+          <label class="option-item">
+            <span>Group / User Names</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" id="blurGroupNames">
+              <div class="toggle-bg"></div>
+            </div>
+          </label>
+        </div>
+
+        <div class="option-group">
+          <label class="option-item">
+            <span>No Hover Delay</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" id="noTransitionDelay">
+              <div class="toggle-bg"></div>
+            </div>
+          </label>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="security-section">
+          <h3>Screen Lock Security</h3>
+
+          <label class="option-item">
+            <span>Enable Screen Lock</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" id="enableScreenLock">
+              <div class="toggle-bg"></div>
+            </div>
+          </label>
+
+          <div class="input-group" id="passwordGroup">
+            <input type="password" id="screenLockPassword" placeholder="Set Password">
+            <button id="savePasswordBtn">Set</button>
+          </div>
+
+          <div class="input-group">
+            <span>Auto-Lock (min):</span>
+            <input type="number" id="autoLockMinutes" min="1" max="60" value="5">
+            <button id="lockNowBtn" title="Shortcut: Alt + Shift + L">Lock Now</button>
+          </div>
+          <div class="shortcut-hint">Shortcut: Alt + Shift + L</div>
+        </div>
+      </div>
+
+      <div class="footer">
+        WhatsApp Web Privacy Blur
+      </div>
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div id="loginView" class="hidden">
+      <div class="login-container">
+        <div class="lock-icon">🔒</div>
+        <h2>Unlock Settings</h2>
+        <input type="password" id="popupPassword" placeholder="Enter Password">
+        <button id="popupUnlockBtn">Unlock</button>
+        <div id="popupError"></div>
+      </div>
+    </div>
+
+  </div>
+  <script src="popup.js"></script>
+</body>
+
+</html>

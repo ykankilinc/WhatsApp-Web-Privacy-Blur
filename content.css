@@ -1,0 +1,346 @@
+:root {
+    --wa-blur-val: 12px;
+    --wa-blur-time: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.wa-no-transition {
+    --wa-blur-time: 0s !important;
+}
+
+
+/* =====================================================================
+   LOCK SCREEN OVERLAY
+   ===================================================================== */
+
+#wa-privacy-lock-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    z-index: 2147483647 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body.dark #wa-privacy-lock-screen {
+    background-color: rgba(17, 27, 33, 0.95);
+    color: #e9edef;
+}
+
+#wa-privacy-lock-screen .lock-container {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+body.dark #wa-privacy-lock-screen .lock-container {
+    background: #202c33;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+#wa-privacy-lock-screen .lock-icon {
+    font-size: 48px;
+    margin-bottom: 8px;
+}
+
+#wa-privacy-lock-screen h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #111b21;
+}
+
+body.dark #wa-privacy-lock-screen h2 {
+    color: #e9edef;
+}
+
+#wa-privacy-lock-screen input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+    text-align: center;
+    background-image: none !important;
+}
+
+body.dark #wa-privacy-lock-screen input {
+    background-color: #2a3942;
+    border-color: #8696a0;
+    color: #e9edef;
+}
+
+#wa-privacy-lock-screen input:focus {
+    border-color: #008069;
+}
+
+#wa-privacy-lock-screen input.error {
+    border-color: #d32f2f;
+    animation: shake 0.4s ease-in-out;
+}
+
+/* Mask text input to look like password (bypasses password managers) */
+#wa-privacy-lock-screen input.masked-password {
+    -webkit-text-security: disc;
+    text-security: disc;
+    font-family: text-security-disc, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* WRAPPER ISOLATION: Hide anything inside the wrapper that isn't the input itself */
+#wa-privacy-lock-screen .wa-input-wrapper>*:not(input) {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Hide native password reveal/autofill icons */
+#wa-privacy-lock-screen input::-ms-reveal,
+#wa-privacy-lock-screen input::-ms-clear {
+    display: none;
+}
+
+#wa-privacy-lock-screen input::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    position: absolute;
+    right: 0;
+    pointer-events: none;
+}
+
+#wa-privacy-lock-screen button {
+    width: 100%;
+    padding: 12px;
+    background-color: #008069;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#wa-privacy-lock-screen button:hover {
+    background-color: #006c59;
+}
+
+#wa-lock-error {
+    color: #d32f2f;
+    font-size: 14px;
+    height: 20px;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-8px);
+    }
+
+    75% {
+        transform: translateX(8px);
+    }
+}
+
+
+/* =====================================================================
+   FEATURE 1: BLUR ALL MESSAGES IN CHAT
+   Targets: .message-in, .message-out (CONFIRMED in DOM with 74 elements)
+   Hover: Individual message reveals on mouseover.
+   ===================================================================== */
+
+body.wa-blur-all-messages #main .message-in,
+body.wa-blur-all-messages #main .message-out {
+    filter: blur(var(--wa-blur-val)) !important;
+    transition: filter var(--wa-blur-time) !important;
+}
+
+body.wa-blur-all-messages #main .message-in:hover,
+body.wa-blur-all-messages #main .message-out:hover {
+    filter: blur(0) !important;
+}
+
+
+/* =====================================================================
+   FEATURE 2: BLUR LAST MESSAGE PREVIEW (SIDEBAR)
+   Targets: All non-title text in the sidebar chat list.
+   Uses broad [dir] selectors since data-testid="cell-frame-secondary"
+   no longer exists in WhatsApp's DOM.
+   Hover: Reveal on mouseover the entire chat row.
+   ===================================================================== */
+
+/* Blur all text-direction elements in the sidebar pane, EXCEPT titled spans (names) */
+body.wa-blur-last-messages #pane-side span[dir]:not([title]),
+body.wa-blur-last-messages #pane-side div[dir]:not([title]) {
+    filter: blur(var(--wa-blur-val)) !important;
+    transition: filter var(--wa-blur-time) !important;
+}
+
+/* Hover: reveal when hovering directly on content or parent row */
+body.wa-blur-last-messages #pane-side span[dir]:not([title]):hover,
+body.wa-blur-last-messages #pane-side div[dir]:not([title]):hover,
+body.wa-blur-last-messages #pane-side [role="listitem"]:hover span[dir]:not([title]),
+body.wa-blur-last-messages #pane-side [role="listitem"]:hover div[dir]:not([title]) {
+    filter: blur(0) !important;
+}
+
+
+/* =====================================================================
+   FEATURE 3: BLUR MEDIA PREVIEW (In Chat)
+   Targets: Images, Videos, Stickers, GIFs inside chat messages.
+   ===================================================================== */
+
+body.wa-blur-media-preview [data-testid="sticker-container"],
+body.wa-blur-media-preview [data-testid="video-content"],
+body.wa-blur-media-preview [data-testid="image-content"],
+body.wa-blur-media-preview [data-testid="media-content"],
+body.wa-blur-media-preview .giphy-content,
+body.wa-blur-media-preview img[src*="sticker"],
+body.wa-blur-media-preview [data-testid="msg-container"] img:not([src*="pps.whatsapp.net"]),
+body.wa-blur-media-preview [data-testid="msg-container"] video,
+body.wa-blur-media-preview [data-testid="msg-container"] canvas {
+    filter: blur(var(--wa-blur-val)) !important;
+    transition: filter var(--wa-blur-time) !important;
+}
+
+body.wa-blur-media-preview [data-testid="sticker-container"]:hover,
+body.wa-blur-media-preview [data-testid="video-content"]:hover,
+body.wa-blur-media-preview [data-testid="image-content"]:hover,
+body.wa-blur-media-preview .giphy-content:hover,
+body.wa-blur-media-preview img[src*="sticker"]:hover,
+body.wa-blur-media-preview [data-testid="msg-container"]:hover img:not([src*="pps.whatsapp.net"]),
+body.wa-blur-media-preview [data-testid="msg-container"]:hover video {
+    filter: blur(0) !important;
+}
+
+
+/* =====================================================================
+   FEATURE 4: BLUR MEDIA GALLERY (Drawer)
+   Targets: Images in the right-side media drawer.
+   ===================================================================== */
+
+body.wa-blur-media-gallery [data-testid="media-gallery"] img,
+body.wa-blur-media-gallery [data-testid="drawer-right"] img {
+    filter: blur(var(--wa-blur-val)) !important;
+    transition: filter var(--wa-blur-time) !important;
+}
+
+body.wa-blur-media-gallery [data-testid="media-gallery"] img:hover,
+body.wa-blur-media-gallery [data-testid="drawer-right"] img:hover {
+    filter: blur(0) !important;
+}
+
+
+/* =====================================================================
+   FEATURE 5: BLUR TEXT INPUT
+   Targets: The typing area in footer.
+   ===================================================================== */
+
+body.wa-blur-text-input [data-testid="conversation-compose-box-input"],
+body.wa-blur-text-input footer div[contenteditable="true"] {
+    filter: blur(var(--wa-blur-val)) !important;
+    transition: filter var(--wa-blur-time) !important;
+}
+
+body.wa-blur-text-input [data-testid="conversation-compose-box-input"]:hover,
+body.wa-blur-text-input footer:hover div[contenteditable="true"] {
+    filter: blur(0) !important;
+}
+
+
+/* =====================================================================
+   FEATURE 6: BLUR PROFILE PICTURES
+   Targets: All avatar images (sidebar, header, drawers).
+   ===================================================================== */
+
+body.wa-blur-profile-pictures #side img,
+body.wa-blur-profile-pictures header img,
+body.wa-blur-profile-pictures [data-testid="conversation-info-header"] img,
+body.wa-blur-profile-pictures [data-testid="drawer-right"] img[src*="pps.whatsapp.net"],
+body.wa-blur-profile-pictures img[src*="pps.whatsapp.net"] {
+    filter: blur(var(--wa-blur-val)) !important;
+    transition: filter var(--wa-blur-time) !important;
+}
+
+body.wa-blur-profile-pictures #side img:hover,
+body.wa-blur-profile-pictures header img:hover,
+body.wa-blur-profile-pictures [data-testid="conversation-info-header"] img:hover,
+body.wa-blur-profile-pictures [data-testid="drawer-right"] img[src*="pps.whatsapp.net"]:hover,
+body.wa-blur-profile-pictures img[src*="pps.whatsapp.net"]:hover {
+    filter: blur(0) !important;
+}
+
+
+/* =====================================================================
+   FEATURE 7: BLUR GROUP / USER NAMES
+   Targets: Contact names in sidebar, chat header, drawers.
+   Uses span[title] for sidebar (names have title attr) and
+   [dir="auto"] for drawers/headers.
+   ===================================================================== */
+
+/* --- Sidebar Names (contact/group names have title attribute) --- */
+body.wa-blur-group-names #pane-side span[title] {
+    filter: blur(var(--wa-blur-val)) !important;
+    transition: filter var(--wa-blur-time) !important;
+}
+
+body.wa-blur-group-names #pane-side span[title]:hover,
+body.wa-blur-group-names #pane-side [role="listitem"]:hover span[title] {
+    filter: blur(0) !important;
+}
+
+/* --- Main Chat Header (name at top of chat) --- */
+body.wa-blur-group-names #main header span[title],
+body.wa-blur-group-names #main header [dir="auto"] {
+    filter: blur(var(--wa-blur-val)) !important;
+    transition: filter var(--wa-blur-time) !important;
+}
+
+body.wa-blur-group-names #main header span[title]:hover,
+body.wa-blur-group-names #main header [dir="auto"]:hover {
+    filter: blur(0) !important;
+}
+
+/* --- Left Drawer (Own Profile/Settings) --- */
+body.wa-blur-group-names [data-testid="drawer-left"] [dir="auto"] {
+    filter: blur(var(--wa-blur-val)) !important;
+    transition: filter var(--wa-blur-time) !important;
+}
+
+body.wa-blur-group-names [data-testid="drawer-left"] [dir="auto"]:hover {
+    filter: blur(0) !important;
+}
+
+/* --- Right Drawer (Contact Info panel) --- */
+body.wa-blur-group-names [data-testid="drawer-right"] span[dir="auto"],
+body.wa-blur-group-names [data-testid="drawer-right"] header [dir="auto"],
+body.wa-blur-group-names [data-testid="conversation-info-header"] [dir="auto"] {
+    filter: blur(var(--wa-blur-val)) !important;
+    transition: filter var(--wa-blur-time) !important;
+}
+
+body.wa-blur-group-names [data-testid="drawer-right"] span[dir="auto"]:hover,
+body.wa-blur-group-names [data-testid="drawer-right"] header [dir="auto"]:hover,
+body.wa-blur-group-names [data-testid="conversation-info-header"] [dir="auto"]:hover {
+    filter: blur(0) !important;
+}
